@@ -1,0 +1,65 @@
+<style type="text/css">
+  .form-horizontal input.ng-invalid.ng-dirty {
+    border-color: #FA787E;
+  }
+
+  .form-horizontal input.ng-valid.ng-dirty {
+    border-color: #78FA89;
+  }
+</style>
+<div class="view">
+    <div class="container">
+        <div class="row">
+        <nav class= "navbar navbar-default" role= "navigation" >
+			<div class= "navbar-header" >
+				<a class= "navbar-brand" href= "#/dashboard"><i class="glyphicon glyphicon-th-large"></i> Note List </a>
+				<a ng-show="usernote._id" class= "navbar-brand" href= "#/edit-note/0"><i class="glyphicon glyphicon-plus"></i> Create Note </a>
+				<a ng-show="usernote._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Note Number: {{usernote._id}}</a>
+			</div>
+        </nav>
+        <header>
+            <h3>{{htitle}}</h3>
+        </header>
+        <div class="col-md-12">
+			<form role="form" name="myForm" class="form-horizontal">
+			<div class="row">
+			<div class= "form-group" ng-class="{error: myForm.name.$invalid}">
+				<label class= "col-md-2"> Priority </label>
+				<div class="col-md-4">
+				<input name="priority" ng-model="usernote.priority" type= "number" class= "form-control" placeholder="number between 1 and 3" required min="1" max="3"/>
+				<span ng-show="myForm.name.$dirty && myForm.name.$invalid" class="help-inline">Priority Required</span>
+				</div>
+			</div>
+			<div class= "form-group" ng-class="{error: myForm.name.$invalid}">
+				<label class= "col-md-2"> Title </label>
+				<div class="col-md-4">
+				<input name="title" ng-model="usernote.title" type= "text" class= "form-control" placeholder="title" required/>
+				<span ng-show="myForm.name.$dirty && myForm.name.$invalid" class="help-inline">Title Required</span>
+				</div>
+			</div>
+			<div class= "form-group">
+				<label class= "col-md-2"> Note </label>
+				<div class="col-md-4">
+				<textarea name="note" ng-model="usernote.notes" ng-maxlength="300" class= "form-control" placeholder="Enter note" rows="8" required />
+				<span ng-show="myForm.name.$dirty && myForm.name.$invalid" class="help-inline">Not more than 300 charactor</span>
+				</div>
+					<div ng-show="strcount">{{strcount}} {{ (strcount == 1) ? 'charactor' : 'charactors' }}</div>
+				</div>
+			</div>
+			
+			<div class= "form-group">
+				<label class= "col-md-2"></label>
+				<div class="col-md-4">
+				<a href="#/dashboard" class="btn">Cancel</a>
+					<button ng-click="addeditNotes(usernote);" 
+							ng-disabled="isClean() || myForm.$invalid"
+							class="btn btn-primary">{{buttonText}}</button>
+					<button ng-click="deleteNote(usernote)"
+							ng-show="usernote._id" class="btn btn-warning">Delete</button>
+				</div>
+			</div>
+			</div>
+			</form>
+        </div></div>
+    </div>
+</div>

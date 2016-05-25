@@ -1,0 +1,52 @@
+.card {
+    position: relative;
+    display: block;
+    margin-bottom: 3rem;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+}
+
+.card-block {
+    padding: 2rem;
+}
+
+.para{
+	height: 100px;
+}
+
+.mtop{
+	margin-top:0px !important;
+}
+
+.grp-icon{
+	 text-align: right;
+}
+
+.mdfy-btn{
+	padding: 6px 5px;
+    color: whitesmoke;
+}
+
+.priority-color1 {
+	background-color: #D9534F;
+}
+
+.priority-color2 {
+	background-color: #5BC0DE;
+}
+
+.priority-color3 {
+	background-color: #5CB85C;
+}
+
+.chk-box{
+	float: right;
+    margin: 11px 0px 0px 10px !important;
+}
+
+
+
+
+
+
