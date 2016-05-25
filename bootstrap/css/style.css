@@ -7,6 +7,20 @@
     border-radius: 10px;
 }
 
+.loader{
+    background: #449d44 none repeat scroll 0 0;
+    border: 2px solid #b4de7d;
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    left: 44%;
+    opacity: 0.8;
+    padding: 5px 10px;
+    position: fixed;
+    top: 50%;
+    z-index: 100;
+}
+
 .card-block {
     padding: 2.5rem;
 }

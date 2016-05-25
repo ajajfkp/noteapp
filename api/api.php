@@ -31,8 +31,8 @@
 				$this->response('',406);
 			}
 			$authData = json_decode(file_get_contents("php://input"),true);
-			$username = $authData['userLogin']['username'];		
-			$passwd = $authData['userLogin']['password'];	
+			$username =  mysqli_real_escape_string($this->conn,$authData['userLogin']['username']);		
+			$passwd = mysqli_real_escape_string($this->conn,$authData['userLogin']['password']);	
 
 			if(!empty($username) and !empty($passwd)){
 				$query="SELECT id, username, passwd FROM users WHERE username = '$username' AND passwd = '".md5($passwd)."' LIMIT 1";
@@ -43,9 +43,10 @@
 					// If success everythig is good send header as "OK" and user details
 					$result['status'] = "success";
 					$this->response($this->json($result), 200);
+				}else{
+					$error = array('status' => "Failed", "msg" => "Invalid User name or Password");
+					$this->response($this->json($error), 200);die;	// If no records "No Content" status
 				}
-				$error = array('status' => "Failed", "msg" => "Invalid User name or Password");
-				$this->response($this->json($error), 204);die;	// If no records "No Content" status
 			}
 			
 			$error = array('status' => "Failed", "msg" => "Invalid User name or Password");
