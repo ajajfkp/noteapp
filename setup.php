@@ -1,12 +1,8 @@
 <?php
-require_once 'api/dbConnect.php';
+require_once('api/dbConnect.php');
 // opening db connection
 $db = new dbConnect();
 $conn = $db->connect();
-
-//$r1 = $conn->query("CREATE DATABASE IF NOT EXISTS `noteapp` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci");
-
-//$r2 = $conn->query("USE `noteapp`");
 
 $r3 = $conn->query("CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
