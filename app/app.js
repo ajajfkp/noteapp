@@ -1,19 +1,15 @@
-var app = angular.module('noteMpdule',['ngRoute','infinite-scroll']);
+var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 	app.config(['$routeProvider', function ($routeProvider) {
-        $routeProvider
-		
-		.when('/login', {
+		$routeProvider.when('/login', {
             title: 'Login',
             templateUrl: 'partials/login.html',
             controller: 'authCtrl'
         })
-		
 		.when('/dashboard', {
 			title: 'Dashboard',
 			templateUrl: 'partials/dashboard.html',
 			controller: 'dashboardCtrl'
 		})
-		
 		.when('/edit-note/:noteId', {
 			title: 'Edit Note',
 			templateUrl: 'partials/addeditnote.html',
@@ -31,7 +27,6 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll']);
 			  }
 			}
 		})
-		
 		.otherwise({
 			redirectTo: '/login'
 		});
@@ -65,22 +60,17 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll']);
 			}
 		}).then(function (results) {
 			$scope.usernotes = results;
-			var offset = 2;
-			var limit = 2;
-			var lastdata = 100;
-			var reachLast = false;
-			$scope.loadmore = "Loading More data..";
+			var offset = 4;
+			var limit = 5;
+			$scope.loadmoreChk = false;
 			$scope.busy = false;
 			
 			$scope.loadMore = function() {
-				
-				if(reachLast){
-					 return false;
-				 }
-				if ($scope.busy) return;
-					$scope.busy = true;
-				
-				offset = offset+limit;
+				if ($scope.busy) {
+						return;
+				}
+				$scope.loadmoreChk = true;
+				$scope.busy = true;
 				Data.get('getnotes',{
 					params:{
 						userId:$rootScope.uid,
@@ -91,10 +81,9 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll']);
 					if(results){
 						$scope.usernotes = $scope.usernotes.concat(results);
 						$scope.busy = false;
-					}else{
-						reachLast = true;
+						offset = offset+limit;
 					}
-					
+					$scope.loadmoreChk = false;
 				});
 			};
 			$scope.deleteNote = function(usernote) {
@@ -141,9 +130,9 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll']);
             var checked= $filter("filter")( n , {checked:true} );
             if(checked){
                 $scope.selected = checked;
-                $('button').removeAttr('disabled');
+                //$('button').removeAttr('disabled');
             }else{
-                $('button').attr('disabled','disabled');
+                //$('button').attr('disabled','disabled');
             }
         }, true ); 
 		
