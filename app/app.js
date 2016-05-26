@@ -158,34 +158,23 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 		$rootScope.htitle = (noteId > 0) ? 'Edit Note' : 'Add New Note';
 		$scope.buttonText = (noteId > 0) ? 'Update Note' : 'Add New Note';
 		
-		  var original = usernote;
-			  original._id = noteId;
-			  original.priority = parseInt(usernote.priority,10);
-		  $scope.usernote = angular.copy(original);
-		  $scope.usernote._id = noteId;
-		  
-		  if(original){
+		var original = usernote;
+			original._id = noteId;
+			original.priority = parseInt(usernote.priority,10);
+		$scope.usernote = angular.copy(original);
+		$scope.usernote._id = noteId;
+
+		if(original){
 			var texCount = original.notes.length;
 			$scope.strcount = texCount;
-		  }
-		  
-		  $scope.$watch( "usernote.notes" , function(n,o){
-			  if(n){
-				  var texCount = n.length;
-				  $scope.strcount = texCount;
-			  }else{
-				  $scope.strcount = '';
-			  }
-        }, true ); 
-		  
-		  
-		  
-		  $scope.isClean = function() {
-			return angular.equals(original, $scope.usernote);
-		  }
+		}
 
-		  $scope.deleteNote = function(usernote) {
-			  var confirms = confirm("Are you sure to delete note number: "+$scope.usernote._id);
+		$scope.isClean = function() {
+			return angular.equals(original, $scope.usernote);
+		}
+
+		$scope.deleteNote = function(usernote) {
+			var confirms = confirm("Are you sure to delete note number: "+$scope.usernote._id);
 			if(confirms==true){
 				$location.path('/dashboard');
 				Data.delete('deleteNote',{
@@ -196,9 +185,9 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 					$scope.resp = results;
 				});
 			}			
-		  };
+		};
 
-		  $scope.addeditNotes = function(usernote) {
+		$scope.addeditNotes = function(usernote) {
 			$location.path('/dashboard');
 			if (noteId <= 0) {
 				usernote.uid = localStorage.uid;
@@ -249,3 +238,17 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 		return obj;
 	}]);
 	
+	app.directive('myMaxlength', function() {
+		return {
+			require: 'ngModel',
+			link: function (scope, element, attrs, ngModelCtrl) {
+				scope.$watch( attrs.ngModel , function(newVal,oldVal){
+					if(newVal.length>300){
+					ngModelCtrl.$setViewValue( newVal.substr(0,300));
+					ngModelCtrl.$render();
+					}
+				}, true );
+				
+			}
+		}; 
+	});

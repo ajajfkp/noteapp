@@ -40,10 +40,10 @@
 			<div class= "form-group">
 				<label class= "col-md-2"> Note </label>
 				<div class="col-md-4">
-				<textarea name="note" ng-model="usernote.notes" ng-maxlength="300" class= "form-control" placeholder="Enter note" rows="8" required />
+				<textarea name="note" ng-model="usernote.notes" class= "form-control" placeholder="Enter note" rows="8" required my-maxlength="300" />
 				<span ng-show="myForm.name.$dirty && myForm.name.$invalid" class="help-inline">Not more than 300 charactor</span>
 				</div>
-					<div ng-show="strcount">{{strcount}} {{ (strcount == 1) ? 'charactor' : 'charactors' }}</div>
+					<div ng-show="usernote.notes">{{ 300 - usernote.notes.length}} {{ (usernote.notes.length >= 299) ? 'charactor' : 'charactors' }} remaining </div>
 				</div>
 			</div>
 			
