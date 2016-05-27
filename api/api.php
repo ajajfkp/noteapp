@@ -9,7 +9,8 @@
 		private $mysqli = NULL;
 		public function __construct(){
 			parent::__construct();				// Init parent contructor
-			require_once 'dbConnect.php';
+			require_once('../config.php');
+			require_once('dbConnect.php');
 			// opening db connection
 			$db = new dbConnect();
 			$this->conn = $db->connect();
