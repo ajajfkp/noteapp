@@ -86,34 +86,28 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 					$scope.loadmoreChk = false;
 				});
 			};
-			$scope.deleteNote = function(usernote) {
-				var confirms = confirm("Are you sure to delete note number: "+usernote.id);
-				if(confirms==true){
-					$route.reload();
-					Data.delete('deleteNote',{
-						params:{
-							id:usernote.id
-						}
-					}).then(function (results) {
-						$scope.resp = results;
-					});
-				}			
-			};
-			
 		});
 		
-		
-		
-		
-		
-		
-		 $scope.deleteSelected = function() {
-			 var selectIds=""
-			for(i in $scope.selected){
-				selectIds += $scope.selected[i]['id']+",";
-			}
-			selectIds = selectIds.slice(0,-1);
-			var confirms = confirm("Are you sure to delete note numbers: "+selectIds);
+		$scope.deleteNote = function(usernote) {
+			var confirms = confirm("Are you sure to delete note number: "+usernote.id);
+			if(confirms==true){
+				$route.reload();
+				Data.delete('deleteNote',{
+					params:{
+						id:usernote.id
+					}
+				}).then(function (results) {
+					$scope.resp = results;
+				});
+			}			
+		};
+		$scope.deleteSelected = function() {
+		var selectIds="";
+		for(i in $scope.selected){
+			selectIds += $scope.selected[i]['id']+",";
+		}
+		selectIds = selectIds.slice(0,-1);
+		var confirms = confirm("Are you sure to delete note numbers: "+selectIds);
 			if(confirms==true){
 				$route.reload();
 				Data.delete('deleteNote',{
@@ -252,3 +246,39 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 			}
 		}; 
 	});
+	
+	app.directive('backTop', function() {
+		return {
+			restrict: 'AE',
+			transclude: true,
+			template: '<div id="backtop" class="{{theme}}">{{text}}<div ng-transclude></div></div>',
+			scope: {
+			  text: "@buttonText",
+			  speed: "@scrollSpeed"
+			},
+			link: function(scope, element) {
+				scope.text = scope.text || 'Scroll top';
+				scope.speed = parseInt(scope.speed, 10) || 300;
+				element.on('click', function() {
+				var takingTime = Math.round((element.offset().top/scope.speed)*500);
+					$("body").animate({scrollTop: 0}, takingTime);
+				});
+				window.addEventListener('scroll', function() {
+					if (window.pageYOffset > 0) {
+						element.addClass('show');
+					} else {
+						element.removeClass('show');
+					}
+				});
+			}
+		}; 
+	});
+	
+	
+	
+	
+	
+	
+	
+	
+	

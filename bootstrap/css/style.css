@@ -59,8 +59,18 @@
     margin: 11px 0px 0px 10px !important;
 }
 
+.gototop{
+    position: fixed;
+    bottom: 10px;
+    border: 1px solid #E2A5A5;
+    padding: 10px 20px;
+    background: #5CB85C;
+    color: wheat;
+    font-weight: bold;
+    right: 20px;
+}
 
-
-
-
+.hide{
+	display:none;
+}
 
