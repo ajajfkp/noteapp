@@ -50,7 +50,7 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
         });
     });
   
-	app.controller('dashboardCtrl', function ($scope, $rootScope, $route, Data, $filter) {
+	app.controller('dashboardCtrl', function ($scope, $rootScope, $route, Data, $filter, popupService) {
 		//console.log(infiniteScroll);
 		Data.get('getnotes',{
 			params:{
@@ -89,25 +89,55 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 		});
 		
 		$scope.deleteNote = function(usernote) {
-			var confirms = confirm("Are you sure to delete note number: "+usernote.id);
-			if(confirms==true){
-				$route.reload();
-				Data.delete('deleteNote',{
-					params:{
-						id:usernote.id
-					}
-				}).then(function (results) {
-					$scope.resp = results;
-				});
-			}			
+			popupService.alerts({
+				title:'Confirm Delete',
+				message:'Are you sure to delete note number: '+usernote.id,
+				paramsCb:['aijaz','ahmad'],
+				callbackFun:function(){
+					Data.delete('deleteNote',{
+						params:{
+							id:usernote.id
+						}
+					}).then(function (results) {
+						$scope.resp = results;
+						$scope.usernotes.splice($scope.usernotes.indexOf(usernote),1);
+					});
+				},
+				paramsCan:['can-aijaz','can-ahmad'],
+				canFun:function(){
+					console.log(this.paramsCan);
+				}
+			});
 		};
+		
 		$scope.deleteSelected = function() {
-		var selectIds="";
-		for(i in $scope.selected){
-			selectIds += $scope.selected[i]['id']+",";
-		}
-		selectIds = selectIds.slice(0,-1);
-		var confirms = confirm("Are you sure to delete note numbers: "+selectIds);
+			var selectIds="";
+			for(i in $scope.selected){
+				selectIds += $scope.selected[i]['id']+",";
+			}
+			selectIds = selectIds.slice(0,-1);
+			popupService.alerts({
+				title:'Confirm Delete',
+				message:'Are you sure to delete note number: '+selectIds,
+				paramsCb:[],
+				callbackFun:function(){
+					Data.delete('deleteNote',{
+						params:{
+							id:selectIds
+						}
+					}).then(function (results) {
+						$scope.resp = results;
+						for(i in $scope.selected){
+							$scope.usernotes.splice($scope.usernotes.indexOf($scope.selected[i]),1);
+						}
+					});
+				},
+				paramsCan:[],
+				canFun:function(){
+					console.log(this.paramsCan);
+				}
+			});
+			/* var confirms = confirm("Are you sure to delete note numbers: "+selectIds);
 			if(confirms==true){
 				$route.reload();
 				Data.delete('deleteNote',{
@@ -117,20 +147,16 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 				}).then(function (results) {
 					$scope.resp = results;
 				});
-			}
+			} */
 		}
 		
 		$scope.$watch( "usernotes" , function(n,o){
             var checked= $filter("filter")( n , {checked:true} );
             if(checked){
                 $scope.selected = checked;
-                //$('button').removeAttr('disabled');
-            }else{
-                //$('button').attr('disabled','disabled');
             }
         }, true ); 
-		
-		$scope.isAll = false;
+		/* $scope.isAll = false;
         $scope.selectAllNotes = function() {
             if($scope.isAll === false) {
                 angular.forEach($scope.usernotes, function(input){
@@ -143,11 +169,11 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
                 });
                 $scope.isAll = false;
             }
-        };
+        }; */
 		
 	});
 	
-	app.controller('addeditCtrl', function ($scope, $rootScope, $location, $routeParams, Data, usernote) {
+	app.controller('addeditCtrl', function ($scope, $rootScope, $location, $routeParams, Data, usernote, popupService) {
 		var noteId = ($routeParams.noteId) ? parseInt($routeParams.noteId) : 0;
 		$rootScope.htitle = (noteId > 0) ? 'Edit Note' : 'Add New Note';
 		$scope.buttonText = (noteId > 0) ? 'Update Note' : 'Add New Note';
@@ -168,17 +194,25 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 		}
 
 		$scope.deleteNote = function(usernote) {
-			var confirms = confirm("Are you sure to delete note number: "+$scope.usernote._id);
-			if(confirms==true){
-				$location.path('/dashboard');
-				Data.delete('deleteNote',{
-					params:{
-						id:$scope.usernote._id
-					}
-				}).then(function (results) {
-					$scope.resp = results;
-				});
-			}			
+			popupService.alerts({
+				title:'Confirm Delete',
+				message:'Are you sure to delete note number: '+usernote._id,
+				paramsCb:[],
+				callbackFun:function(){
+					Data.delete('deleteNote',{
+						params:{
+							id:usernote._id
+						}
+					}).then(function (results) {
+						$scope.resp = results;
+						$location.path('/dashboard');
+					});
+				},
+				paramsCan:[],
+				canFun:function(){
+					console.log(this.paramsCan);
+				}
+			});
 		};
 
 		$scope.addeditNotes = function(usernote) {
@@ -274,7 +308,67 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 		}; 
 	});
 	
-	
+	app.factory("popupService",function($document, $compile, $rootScope, $templateCache){
+		var body = $document.find('body');
+			return {
+				alerts: function (data) {
+					var scope = $rootScope.$new();
+					angular.extend(scope, data);
+					scope.title = data.title ? data.title : 'Alert!!!';
+					scope.message = data.message ? data.message : 'No message';
+					scope.closeButtonText = data.closeButtonText ? data.closeButtonText : 'Cancle';
+					scope.actionButtonText = data.actionButtonText ? data.actionButtonText : 'Delete';
+
+					scope.donefunction = data.callbackFun;
+					scope.canfunction = data.canFun;
+					var alertPopup = angular.element([
+                        '<div class="modal" style="display: block;">',
+							'<div class="modal-dialog">',
+								'<div class="modal-content">',
+									'<div class="modal-header">',
+										'<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();">×</button>',
+										'<h4 class="modal-title" id="myModalLabel">{{title}}</h4>',
+									'</div>',
+									'<div class="modal-body">',
+										'<p>{{message}}</p>',
+										'<p>Do you want to proceed?</p>',
+									'</div>',
+									'<div class="modal-footer">',
+										'<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="close();">{{closeButtonText}}</button>',
+										'<button type="button" class="btn btn-danger btn-ok" ng-click="ok();">{{actionButtonText}}</button>',
+									'</div>',
+								'</div>',
+							'</div>',
+						'</div>'
+                    ].join(''));
+					$compile(alertPopup)(scope);
+                    body.append(alertPopup);					
+					
+					scope.close = function () {
+						alertPopup.remove();
+						scope.$destroy();
+					};
+					
+					scope.ok = function(){
+						if(scope.donefunction){
+							scope.donefunction();
+							alertPopup.remove();
+						}else{
+							alertPopup.remove();
+						}
+					}
+					scope.cancle = function(){
+					if(typeof scope.canfunction != 'undefined'){
+							scope.canfunction();
+							alertPopup.remove();
+						}else{
+							alertPopup.remove();
+							scope.$destroy();
+						}
+					}
+				}
+			}
+		});
 	
 	
 	
