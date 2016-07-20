@@ -322,8 +322,9 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 					scope.donefunction = data.callbackFun;
 					scope.canfunction = data.canFun;
 					var alertPopup = angular.element([
-                        '<div class="modal" style="display: block;">',
-							'<div class="modal-dialog">',
+                        '<div id="cnfPopupCntnr" class="modal" style="display:block">',
+                        '<div id="cnfPopupMask" class="modal-backdrop fade"></div>',
+							'<div id="cnfPopup" class="modal-dialog">',
 								'<div class="modal-content">',
 									'<div class="modal-header">',
 										'<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close();">×</button>',
@@ -342,7 +343,14 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 						'</div>'
                     ].join(''));
 					$compile(alertPopup)(scope);
-                    body.append(alertPopup);					
+                    body.append(alertPopup);
+					
+					$("#cnfPopup").animate({
+						top: "150px",
+						zIndex:1040
+					},200,"linear",function() {
+						$("#cnfPopupMask").addClass('in');
+					});
 					
 					scope.close = function () {
 						alertPopup.remove();
