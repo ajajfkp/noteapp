@@ -89,7 +89,7 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 		});
 		
 		$scope.deleteNote = function(usernote) {
-			popupService.alerts({
+			popupService.confirmPopup({
 				title:'Confirm Delete',
 				message:'Are you sure to delete note number: '+usernote.id,
 				paramsCb:['aijaz','ahmad'],
@@ -116,7 +116,7 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 				selectIds += $scope.selected[i]['id']+",";
 			}
 			selectIds = selectIds.slice(0,-1);
-			popupService.alerts({
+			popupService.confirmPopup({
 				title:'Confirm Delete',
 				message:'Are you sure to delete note number: '+selectIds,
 				paramsCb:[],
@@ -194,7 +194,7 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 		}
 
 		$scope.deleteNote = function(usernote) {
-			popupService.alerts({
+			popupService.confirmPopup({
 				title:'Confirm Delete',
 				message:'Are you sure to delete note number: '+usernote._id,
 				paramsCb:[],
@@ -311,7 +311,7 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 	app.factory("popupService",function($document, $compile, $rootScope, $templateCache){
 		var body = $document.find('body');
 			return {
-				alerts: function (data) {
+				confirmPopup: function (data) {
 					var scope = $rootScope.$new();
 					angular.extend(scope, data);
 					scope.title = data.title ? data.title : 'Alert!!!';
@@ -321,6 +321,7 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 
 					scope.donefunction = data.callbackFun;
 					scope.canfunction = data.canFun;
+					
 					var alertPopup = angular.element([
                         '<div id="cnfPopupCntnr" class="modal" style="display:block">',
                         '<div id="cnfPopupMask" class="modal-backdrop fade"></div>',
@@ -342,8 +343,9 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 							'</div>',
 						'</div>'
                     ].join(''));
-					$compile(alertPopup)(scope);
-                    body.append(alertPopup);
+					
+					$compile(confirmPopupStr)(scope);
+                    body.append(confirmPopupStr);
 					
 					$("#cnfPopup").animate({
 						top: "150px",
@@ -353,24 +355,25 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 					});
 					
 					scope.close = function () {
-						alertPopup.remove();
+						confirmPopupStr.remove();
 						scope.$destroy();
 					};
 					
 					scope.ok = function(){
 						if(scope.donefunction){
 							scope.donefunction();
-							alertPopup.remove();
+							confirmPopupStr.remove();
 						}else{
-							alertPopup.remove();
+							confirmPopupStr.remove();
 						}
 					}
+					
 					scope.cancle = function(){
 					if(typeof scope.canfunction != 'undefined'){
 							scope.canfunction();
-							alertPopup.remove();
+							confirmPopupStr.remove();
 						}else{
-							alertPopup.remove();
+							confirmPopupStr.remove();
 							scope.$destroy();
 						}
 					}
