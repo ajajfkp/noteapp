@@ -8,16 +8,16 @@
 }
 
 .loader{
-    background: #449d44 none repeat scroll 0 0;
+	background: #449d44 none repeat scroll 0 0;
     border: 2px solid #b4de7d;
     border-radius: 10px;
     color: white;
     font-size: 16px;
-    left: 44%;
+    margin: 0 36%;
     opacity: 0.8;
     padding: 5px 10px;
-    position: fixed;
-    top: 50%;
+    position: absolute;
+    top: 355px;
     z-index: 100;
 }
 
@@ -26,7 +26,7 @@
 }
 
 .para{
-	height: 100px;
+	min-height: 100px;
 }
 
 .mtop{
@@ -74,3 +74,13 @@
 	display:none;
 }
 
+@media only screen and (max-width: 320px) {
+	.loader{
+		margin: 0 18%;
+	}
+}
+@media only screen and (min-width: 321px) and (max-width: 360px) {
+	.loader{
+		margin: 0 21%;
+	}
+}

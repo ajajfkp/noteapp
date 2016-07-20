@@ -295,7 +295,7 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 				scope.speed = parseInt(scope.speed, 10) || 300;
 				element.on('click', function() {
 				var takingTime = Math.round((element.offset().top/scope.speed)*500);
-					$("body").animate({scrollTop: 0}, takingTime);
+					$("html,body").animate({scrollTop: 0}, takingTime);
 				});
 				window.addEventListener('scroll', function() {
 					if (window.pageYOffset > 0) {
@@ -322,7 +322,7 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 					scope.donefunction = data.callbackFun;
 					scope.canfunction = data.canFun;
 					
-					var alertPopup = angular.element([
+					var confirmPopupStr = angular.element([
                         '<div id="cnfPopupCntnr" class="modal" style="display:block">',
                         '<div id="cnfPopupMask" class="modal-backdrop fade"></div>',
 							'<div id="cnfPopup" class="modal-dialog">',
@@ -350,8 +350,12 @@ var app = angular.module('noteMpdule',['ngRoute','infinite-scroll','toaster']);
 					$("#cnfPopup").animate({
 						top: "150px",
 						zIndex:1040
-					},200,"linear",function() {
-						$("#cnfPopupMask").addClass('in');
+					},{
+						duration:200,
+						easing:'linear',
+						complete:function() {
+							$("#cnfPopupMask").addClass('in');
+						}
 					});
 					
 					scope.close = function () {
